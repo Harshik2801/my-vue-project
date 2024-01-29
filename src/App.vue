@@ -1,26 +1,61 @@
+<!-- App.vue -->
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div style="height: 100vh; display: flex; flex-direction: column;">
+    <Navbar @navigateTo="navigateTo" />
+    <div style="display: flex; flex: 1;">
+      <Options @navigateTo="navigateTo" />
+      <WorkingArea :activeComponent="activeComponent" />
+    </div>
+  </div>
+  <SearchForm v-if="showForm" @submit="handleFormSubmit" />
+  <SearchResults v-else @goBack="handleGoBack" :searchData="searchData" />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Navbar from './components/NavBar.vue';
+import Options from './components/OptionComp.vue';
+import WorkingArea from './components/WorkingArea.vue';
+import SearchForm from "@/components/SearchCompanyForm.vue";
+import SearchResults from "@/components/SearchResults.vue";
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
-  }
-}
-</script>
+    Navbar,
+    Options,
+    WorkingArea,
+    SearchForm,
+    SearchResults
+  },
+  data() {
+    return {
+      activeComponent: null,
+      showForm: true,
+      searchData: null,
+    };
+  },
+  methods: {
+    navigateTo(componentName) {
+      this.activeComponent = componentName;
+    },
+    handleFormSubmit(formData) {
+      // Assuming you have a method to perform the search and retrieve results
+      this.searchData = this.performSearch(formData); // Replace this with actual search logic
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+      // Switch to search results component
+      this.showForm = false;
+    },
+    handleGoBack() {
+      // Switch back to the search form component
+      this.showForm = true;
+    },
+    // Perform your actual search logic here
+    // performSearch(formData) {
+    //   // For illustration purposes, return some dummy data
+    //   return [
+    //     { action: "Action1", siteId: "Site1", type: "Type1", certified: "Yes", watch: "Yes", status: "Active" },
+    //     { action: "Action2", siteId: "Site2", type: "Type2", certified: "No", watch: "No", status: "Inactive" },
+    //   ];
+    // },
+  },
+};
+</script>
